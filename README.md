@@ -6,9 +6,10 @@ StockFlow é uma aplicação focada em **gestão de materiais, estoque e fluxo d
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Backend:** [AdonisJS](https://adonisjs.com/) (Node.js)
+- **Backend:** Node.js + Express + Swagger
 - **Frontend:** [React](https://reactjs.org/)
 - **Banco de dados:** MySQL
+- **Documentação da API:** Swagger (em `/api-docs`)
 - **Versionamento:** Git + GitHub
 
 ---
@@ -25,17 +26,17 @@ StockFlow é uma aplicação focada em **gestão de materiais, estoque e fluxo d
 
 ## ✅ Módulos do Sistema
 
-| Módulo                    | Status       |
-|--------------------------|--------------|
+| Módulo                    | Status          |
+|--------------------------|-----------------|
 | Gestão de materiais      | ✅ Implementado |
-| Inventário de estoque    | ⏳ Em breve   |
-| Processo de vendas       | ⏳ Em breve   |
-| Carrinho de compras      | ⏳ Em breve   |
-| Máquinas de estados      | ⏳ Em breve   |
-| Contas a pagar           | ⏳ Em breve   |
-| Contas a receber         | ⏳ Em breve   |
-| Gestão de funcionários   | ⏳ Em breve   |
-| Relatórios contábeis     | ⏳ Em breve   |
+| Inventário de estoque    | ⏳ Em breve      |
+| Processo de vendas       | ⏳ Em breve      |
+| Carrinho de compras      | ⏳ Em breve      |
+| Máquinas de estados      | ⏳ Em breve      |
+| Contas a pagar           | ⏳ Em breve      |
+| Contas a receber         | ⏳ Em breve      |
+| Gestão de funcionários   | ⏳ Em breve      |
+| Relatórios contábeis     | ⏳ Em breve      |
 
 ---
 
@@ -43,11 +44,19 @@ StockFlow é uma aplicação focada em **gestão de materiais, estoque e fluxo d
 
 ```bash
 StockFlow/
-├── backend/        # API REST com AdonisJS
-│   ├── app/
-│   ├── database/
-│   ├── start/
+├── API/             # API REST com Node.js + Express
+│   ├── server.js
+│   ├── swagger.js
 │   └── ...
-├── frontend/       # Interface com React
+├── frontend/        # Interface com React
+└── README.md        # Documentação do projeto
 
-└── README.md       # Documentação do projeto
+
+
+
+▶️ Como rodar o projeto (API)
+cd API
+npm install
+npm run dev
+
+Acesse http://localhost:3333/api-docs para ver a documentação da API.
