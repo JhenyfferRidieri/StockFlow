@@ -60,3 +60,17 @@ npm install
 npm run dev
 
 Acesse http://localhost:3333/api-docs para ver a documentação da API.
+
+
+## 📌 Requisitos Funcionais
+
+- Cadastro, listagem, edição e exclusão de materiais
+- Exportação dos dados em JSON
+- Visualização da documentação da API via Swagger
+
+## ⚙️ Requisitos Não Funcionais
+
+- API RESTful com Node.js + Express
+- Código versionado no GitHub com PR aberto
+- Documentação da API com Swagger
+- Banco de dados MySQL
