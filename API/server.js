@@ -1,37 +1,19 @@
-const express = require('express')
-const { swaggerUi, swaggerSpec } = require('./swagger')
+const express = require('express');
+const { swaggerUi, swaggerSpec } = require('./swagger');
 
-const app = express()
-app.use(express.json())
+const materialRoutes = require('./routes/materials');
+const inventoryRoutes = require('./routes/inventory');
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+const app = express();
+app.use(express.json());
 
-/**
- * @swagger
- * /materials:
- *   get:
- *     summary: Retorna todos os materiais cadastrados
- *     tags:
- *       - Materiais
- *     responses:
- *       200:
- *         description: Sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: number
- *                     example: 1
- *                   nome:
- *                     type: string
- *                     example: Ferro
- */
-app.get('/materials', (req, res) => {
-  res.json([{ id: 1, nome: 'Ferro' }])
-})
+// Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.listen(3333, () => console.log('🔥 Server on http://localhost:3333'))
+app.use('/materials', materialRoutes);
+app.use('/inventory', inventoryRoutes);
+
+app.listen(3333, () => {
+  console.log('🔥 Server on http://localhost:3333');
+});
+
