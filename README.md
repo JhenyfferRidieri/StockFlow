@@ -1,42 +1,44 @@
 # 🛒 StockFlow
 
-StockFlow é uma aplicação focada em **gestão de materiais, estoque e fluxo de vendas**, desenvolvida como parte de um desafio prático individual do curso de Análise e Desenvolvimento de Sistemas.
+StockFlow é uma aplicação focada em **gestão de materiais, estoque e fluxo de vendas**, desenvolvida como parte de um desafio prático individual da disciplina de Sistemas Corporativos (Análise e Desenvolvimento de Sistemas - 2025/1).
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Backend:** Node.js + Express + Swagger
-- **Frontend:** [React](https://reactjs.org/)
+- **Backend:** Node.js + Express
+- **ORM:** Sequelize
 - **Banco de dados:** MySQL
 - **Documentação da API:** Swagger (em `/api-docs`)
 - **Versionamento:** Git + GitHub
+- **Frontend:** React (em desenvolvimento)
 
 ---
 
 ## 📌 Requisitos do Projeto
 
-- Desenvolver uma API RESTful com dados em formato JSON
-- Versionamento completo com Git e repositório público no GitHub
-- Desenvolver em um Pull Request (sem merge na main até o final)
-- Realizar pelo menos 1 commit por semana, de 29/04 a 27/05
-- Apresentar o projeto em defesa oral (explicação técnica)
+- [x] Desenvolver uma API RESTful com dados em formato JSON
+- [x] Versionamento completo com Git e repositório público no GitHub
+- [x] Desenvolver em uma Pull Request (sem merge na main até o final)
+- [x] Realizar pelo menos 1 commit por semana, de 29/04 a 27/05
+- [ ] Apresentar um diagrama BPMN do fluxo do sistema
+- [ ] Apresentar o projeto em defesa oral (explicação técnica e lógica do código)
 
 ---
 
 ## ✅ Módulos do Sistema
 
-| Módulo                    | Status          |
-|--------------------------|-----------------|
-| Gestão de materiais      | ✅ Implementado |
-| Inventário de estoque    | ⏳ Em breve      |
-| Processo de vendas       | ⏳ Em breve      |
-| Carrinho de compras      | ⏳ Em breve      |
-| Máquinas de estados      | ⏳ Em breve      |
-| Contas a pagar           | ⏳ Em breve      |
-| Contas a receber         | ⏳ Em breve      |
-| Gestão de funcionários   | ⏳ Em breve      |
-| Relatórios contábeis     | ⏳ Em breve      |
+| Módulo                    | Status           | Observações                                        |
+|--------------------------|------------------|----------------------------------------------------|
+| Gestão de materiais      | ✅ Implementado   | CRUD com Sequelize, rotas REST, documentação       |
+| Inventário de estoque    | ✅ Implementado   | Relacionado com materiais, controla o estoque      |
+| Processo de vendas       | ✅ Implementado   | CRUD com status (máquina de estados simples)       |
+| Carrinho de compras      | ❌ Pendente       | A ser implementado com tabela `SaleItem`           |
+| Máquinas de estados      | ⚠️ Parcial        | Estados implementados em `sales`, mas sem FSM doc  |
+| Contas a pagar           | ❌ Pendente       | A ser desenvolvido com vencimento, valor e status  |
+| Contas a receber         | ❌ Pendente       | Relacionado às vendas efetuadas                    |
+| Gestão de funcionários   | ❌ Pendente       | Cadastro básico com nome, cargo e salário          |
+| Relatórios contábeis     | ❌ Pendente       | Endpoint de resumo financeiro                      |
 
 ---
 
@@ -44,33 +46,13 @@ StockFlow é uma aplicação focada em **gestão de materiais, estoque e fluxo d
 
 ```bash
 StockFlow/
-├── API/             # API REST com Node.js + Express
-│   ├── server.js
-│   ├── swagger.js
-│   └── ...
-├── frontend/        # Interface com React
-└── README.md        # Documentação do projeto
-
-
-
-
-▶️ Como rodar o projeto (API)
-cd API
-npm install
-npm run dev
-
-Acesse http://localhost:3333/api-docs para ver a documentação da API.
-
-
-## 📌 Requisitos Funcionais
-
-- Cadastro, listagem, edição e exclusão de materiais
-- Exportação dos dados em JSON
-- Visualização da documentação da API via Swagger
-
-## ⚙️ Requisitos Não Funcionais
-
-- API RESTful com Node.js + Express
-- Código versionado no GitHub com PR aberto
-- Documentação da API com Swagger
-- Banco de dados MySQL
+├── API/                     # API REST com Node.js + Express + Sequelize
+│   ├── controllers/         # Lógica de negócio
+│   ├── migrations/          # Migrations do Sequelize
+│   ├── models/              # Models do Sequelize
+│   ├── routes/              # Rotas REST
+│   ├── config/              # Config do banco de dados
+│   ├── swagger.js           # Configuração Swagger
+│   └── server.js            # Entrada principal da aplicação
+├── frontend/                # (opcional) React em desenvolvimento
+└── README.md                # Documentação geral do projeto
