@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
+  Material.hasMany(models.SaleItem, {
+  foreignKey: 'material_id',
+  as: 'saleItems'
+});
+
+
   Material.init({
     name: {
       type: DataTypes.STRING,

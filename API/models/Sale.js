@@ -7,6 +7,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
+    Sale.hasMany(models.SaleItem, {
+    foreignKey: 'sale_id',
+    as: 'items'
+  });
+
+
   Sale.init({
     customer_name: {
       type: DataTypes.STRING,
@@ -16,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false
     },
+    
     status: {
       type: DataTypes.ENUM('pendente', 'pago', 'cancelado'),
       defaultValue: 'pendente'
