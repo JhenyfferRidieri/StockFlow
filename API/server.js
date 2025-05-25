@@ -15,8 +15,11 @@ app.use('/materials', materialRoutes);
 app.use('/inventory', inventoryRoutes);
 app.use('/sales', salesRoutes);
 
-
-app.listen(3333, () => {
-  console.log('🔥 Server on http://localhost:3333');
+app.get('/', (req, res) => {
+  res.send('StockFlow API rodando 🚀');
 });
 
+const PORT = process.env.PORT || 3333;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});

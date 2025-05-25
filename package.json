@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mysql2": "^3.14.1",
+    "sequelize": "^6.37.7",
+    "sequelize-cli": "^6.6.3"
+  },
+  "name": "stockflow",
+  "description": "StockFlow é uma aplicação focada em **gestão de materiais, estoque e fluxo de vendas**, desenvolvida como parte de um desafio prático individual da disciplina de Sistemas Corporativos (Análise e Desenvolvimento de Sistemas - 2025/1).",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
