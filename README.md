@@ -1,58 +1,142 @@
 # 🛒 StockFlow
 
-StockFlow é uma aplicação focada em **gestão de materiais, estoque e fluxo de vendas**, desenvolvida como parte de um desafio prático individual da disciplina de Sistemas Corporativos (Análise e Desenvolvimento de Sistemas - 2025/1).
+StockFlow é uma aplicação de **gestão de materiais, controle de estoque e processo de vendas**, desenvolvida como parte do projeto da disciplina **Sistemas Corporativos - 2025/1**.
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Backend:** Node.js + Express
-- **ORM:** Sequelize
-- **Banco de dados:** MySQL
-- **Documentação da API:** Swagger (em `/api-docs`)
-- **Versionamento:** Git + GitHub
-- **Frontend:** React (em desenvolvimento)
+* **Backend:** .NET 8 + ASP.NET Core
+* **ORM:** Entity Framework Core + Pomelo (MySQL)
+* **Banco de Dados:** MySQL
+* **Documentação da API:** Swagger (via Swashbuckle)
+* **Versionamento:** Git + GitHub
 
 ---
 
 ## 📌 Requisitos do Projeto
 
-- [x] Desenvolver uma API RESTful com dados em formato JSON
-- [x] Versionamento completo com Git e repositório público no GitHub
-- [x] Desenvolver em uma Pull Request (sem merge na main até o final)
-- [x] Realizar pelo menos 1 commit por semana, de 29/04 a 27/05
-- [ ] Apresentar um diagrama BPMN do fluxo do sistema
-- [ ] Apresentar o projeto em defesa oral (explicação técnica e lógica do código)
+* ✅ API RESTful servindo e recebendo dados em **JSON**
+* ✅ Versionamento completo no Git com repositório público no **GitHub**
+* ✅ Desenvolvimento em **1 Pull Request (PR)** (sem merge na `main`)
+* ✅ Pelo menos **1 commit por semana** entre **29/04 e 27/05**
+* ⚙️ Entregar o projeto com **README atualizado** e **diagrama BPMN**
+* 📑 Defesa oral explicando a estrutura e a lógica do código
 
 ---
 
 ## ✅ Módulos do Sistema
 
-| Módulo                    | Status           | Observações                                        |
-|--------------------------|------------------|----------------------------------------------------|
-| Gestão de materiais      | ✅ Implementado   | CRUD com Sequelize, rotas REST, documentação       |
-| Inventário de estoque    | ✅ Implementado   | Relacionado com materiais, controla o estoque      |
-| Processo de vendas       | ✅ Implementado   | CRUD com status (máquina de estados simples)       |
-| Carrinho de compras      | ❌ Pendente       | A ser implementado com tabela `SaleItem`           |
-| Máquinas de estados      | ⚠️ Parcial        | Estados implementados em `sales`, mas sem FSM doc  |
-| Contas a pagar           | ❌ Pendente       | A ser desenvolvido com vencimento, valor e status  |
-| Contas a receber         | ❌ Pendente       | Relacionado às vendas efetuadas                    |
-| Gestão de funcionários   | ❌ Pendente       | Cadastro básico com nome, cargo e salário          |
-| Relatórios contábeis     | ❌ Pendente       | Endpoint de resumo financeiro                      |
+| 🔧 Módulo                   | ✔️ Status      | 🔎 Descrição                                                |
+| --------------------------- | -------------- | ----------------------------------------------------------- |
+| Gestão de materiais         | ✅ Implementado | CRUD de produtos (nome, cor, tamanho, preço, descrição)     |
+| Inventário de estoque       | ✅ Implementado | Controle de estoque atrelado aos materiais                  |
+| Processo de vendas          | ✅ Implementado | Vendas com controle de itens (`Sale` e `SaleItem`)          |
+| Carrinho de compras         | ❌ Pendente     | A ser implementado                                          |
+| Máquina de estados (vendas) | ⚠️ Parcial     | Status na entidade `Sale` (`Pendente`, `Pago`, `Cancelado`) |
+| Contas a pagar              | ❌ Pendente     | Cadastro de despesas (fornecedores, contas, serviços)       |
+| Contas a receber            | ❌ Pendente     | Recebíveis gerados pelas vendas                             |
+| Gestão de funcionários      | ❌ Pendente     | Cadastro básico (nome, cargo, salário)                      |
+| Relatórios contábeis        | ❌ Pendente     | Endpoint de resumo financeiro, vendas e fluxo de caixa      |
 
 ---
 
-## 📁 Estrutura de Pastas
+## 🗂️ Estrutura do Projeto
+
+```plaintext
+StockFlowAPI/
+├── Controllers/         # Controladores da API (endpoints)
+├── Data/                # Configuração do DbContext (Entity Framework)
+├── Interfaces/          # Interfaces de Repositories e Services
+│   ├── IRepository/
+│   └── IServices/
+├── Models/              # Models (Entidades do banco)
+├── Repositories/        # Implementações dos Repositories
+├── Services/            # Implementações das regras de negócio (Services)
+├── Program.cs           # Configuração do app (Swagger, Cors, DI, etc.)
+├── StockFlowAPI.csproj  # Arquivo de configuração do projeto
+└── README.md            # Documentação do projeto
+```
+
+---
+
+## ▶️ Como Rodar o Projeto Localmente
+
+### 🛠️ Pré-requisitos
+
+* ✅ [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download)
+* ✅ [MySQL](https://www.mysql.com/) rodando localmente
+
+### 📥 Clonar o repositório
 
 ```bash
-StockFlow/
-├── API/                     # API REST com Node.js + Express + Sequelize
-│   ├── controllers/         # Lógica de negócio
-│   ├── migrations/          # Migrations do Sequelize
-│   ├── models/              # Models do Sequelize
-│   ├── routes/              # Rotas REST
-│   ├── config/              # Config do banco de dados
-│   ├── swagger.js           # Configuração Swagger
-│   └── server.js            # Entrada principal da aplicação
-├── frontend/                # (opcional) React em desenvolvimento
-└── README.md                # Documentação geral do projeto
+git clone https://github.com/seu-usuario/StockFlow.git
+cd StockFlow/StockFlowAPI
+```
+
+### ⚙️ Configurar conexão com MySQL
+
+Edite o arquivo `appsettings.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "server=localhost;database=StockFlow;user=root;password=sua_senha"
+  }
+}
+```
+
+### 🚀 Aplicar as migrations e gerar o banco:
+
+```bash
+dotnet ef database update
+```
+
+### ▶️ Rodar o projeto:
+
+```bash
+dotnet run
+```
+
+A API estará disponível em:
+
+```
+http://localhost:5000/swagger
+```
+
+---
+
+## 📝 Requisitos Funcionais
+
+* CRUD completo de materiais, estoque, vendas e itens de venda.
+* Processamento de vendas com cálculo de total.
+* Controle de estoque vinculado à venda.
+* Persistência de dados no MySQL.
+* Documentação da API via Swagger.
+
+## 🚫 Requisitos Não Funcionais
+
+* API desenvolvida em arquitetura REST.
+* Entrega dos dados no formato JSON.
+* Documentação técnica no Swagger.
+* Projeto versionado com Git no GitHub.
+* Código desenvolvido seguindo boas práticas de Clean Code e organização em camadas.
+
+---
+
+## 📈 Diagrama BPMN
+
+👉 **
+
+---
+
+## 👨‍💻 Autor
+
+* **Jhenyffer Oliveira**
+  Desenvolvido como parte do curso de **Análise e Desenvolvimento de Sistemas - Universidade Positivo (2025/1)**.
+
+---
+
+## ⭐ Observação
+
+> Este projeto faz parte de uma avaliação acadêmica e foi desenvolvido exclusivamente para fins educacionais.
