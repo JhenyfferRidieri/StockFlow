@@ -7,17 +7,12 @@ namespace StockFlowAPI.Repositories
 {
     public class InventoryRepository : RepositoryBase<Inventory>, IInventoryRepository
     {
-        private readonly AppDbContext _context;
-
-        public InventoryRepository(AppDbContext context) : base(context)
-        {
-            _context = context;
-        }
+        public InventoryRepository(AppDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Inventory>> GetAllWithMaterialAsync()
         {
             return await _context.Inventory
-                .Include(i => i.Material) // Faz o join com a tabela de materiais
+                .Include(i => i.Material)
                 .OrderBy(i => i.Id)
                 .ToListAsync();
         }

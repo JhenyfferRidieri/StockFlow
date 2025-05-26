@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StockFlowAPI.Data;
+using StockFlowAPI.Interfaces.IServices;
 using StockFlowAPI.Models;
+using StockFlowAPI.Models.Enum;
+using StockFlowAPI.Dto;
 
 namespace StockFlowAPI.Controllers
 {
@@ -9,101 +10,62 @@ namespace StockFlowAPI.Controllers
     [ApiController]
     public class SalesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ISaleService _saleService;
 
-        public SalesController(AppDbContext context)
+        public SalesController(ISaleService saleService)
         {
-            _context = context;
+            _saleService = saleService;
         }
 
-        // GET: api/Sales
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Sale>>> GetSales()
+        public async Task<IActionResult> GetAll()
         {
-            return await _context.Sales
-                .Include(s => s.SaleItems)
-                .ThenInclude(si => si.Material)
-                .ToListAsync();
+            var sales = await _saleService.GetAllAsync();
+            return Ok(sales);
         }
 
-        // GET: api/Sales/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Sale>> GetSale(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var sale = await _context.Sales
-                .Include(s => s.SaleItems)
-                .ThenInclude(si => si.Material)
-                .FirstOrDefaultAsync(s => s.Id == id);
-
-            if (sale == null)
-            {
-                return NotFound();
-            }
-
-            return sale;
+            var sale = await _saleService.GetByIdAsync(id);
+            if (sale == null) return NotFound();
+            return Ok(sale);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Sale>> PostSale(Sale sale)
+        public async Task<IActionResult> Create(Sale sale)
         {
-            sale.Total = sale.SaleItems.Sum(i => i.Quantity * i.UnitPrice); 
-
-            _context.Sales.Add(sale);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetSale), new { id = sale.Id }, sale);
+            var created = await _saleService.CreateAsync(sale);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSale(int id, Sale sale)
+        public async Task<IActionResult> Update(int id, Sale sale)
         {
-            if (id != sale.Id)
-            {
-                return BadRequest();
-            }
+            if (id != sale.Id) return BadRequest();
 
-            sale.Total = sale.SaleItems.Sum(i => i.Quantity * i.UnitPrice); 
-
-            _context.Entry(sale).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SaleExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var updated = await _saleService.UpdateAsync(sale);
+            return Ok(updated);
         }
 
-        // DELETE: api/Sales/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSale(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var sale = await _context.Sales.FindAsync(id);
-            if (sale == null)
-            {
-                return NotFound();
-            }
-
-            _context.Sales.Remove(sale);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            var deleted = await _saleService.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
         }
 
-        private bool SaleExists(int id)
+        // Endpoint para atualizar Status
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, UpdateSaleStatusDto dto)
         {
-            return _context.Sales.Any(e => e.Id == id);
+            var sale = await _saleService.GetByIdAsync(id);
+            if (sale == null) return NotFound();
+
+            sale.Status = Enum.Parse<SaleStatus>(dto.Status, ignoreCase: true);
+            await _saleService.UpdateAsync(sale);
+
+            return Ok(sale);
         }
     }
 }

@@ -8,29 +8,38 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//String de conexão
+// String de conexão
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-//Contexto do Banco de Dados (MySQL)
+// Contexto do Banco de Dados (MySQL)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-//Injeção de Dependência - Repositories
+// Injeção de Dependência - Repositories
 builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<ISaleItemRepository, SaleItemRepository>();
+builder.Services.AddScoped<IAccountPayableRepository, AccountPayableRepository>();
+builder.Services.AddScoped<IAccountReceivableRepository, AccountReceivableRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
-//Injeção de Dependência - Services
+// Injeção de Dependência - Services
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<ISaleItemService, SaleItemService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ISaleStateService, SaleStateService>();
+builder.Services.AddScoped<IAccountPayableService, AccountPayableService>();
+builder.Services.AddScoped<IAccountReceivableService, AccountReceivableService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
-//Controllers
+// Controllers
 builder.Services.AddControllers();
 
-//Swagger
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -42,7 +51,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Cors (opcional, mas recomendado se for consumir com front separado)
+// Cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -54,19 +63,18 @@ builder.Services.AddCors(options =>
     });
 });
 
-// App
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+///Swagger SEM restrição por ambiente:
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "StockFlow API V1");
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "StockFlow API V1");
+    c.RoutePrefix = string.Empty; 
+});
 
-app.UseHttpsRedirection();
+// HTTPS Redirection ( comentar se quiser rodar só em HTTP)
+// app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 

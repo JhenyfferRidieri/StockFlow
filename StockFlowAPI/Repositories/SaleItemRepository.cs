@@ -17,9 +17,9 @@ public class SaleItemRepository : ISaleItemRepository
         return await _context.SaleItems.ToListAsync();
     }
 
-    public async Task<SaleItem> GetByIdAsync(int id)
+    public async Task<SaleItem?> GetByIdAsync(int id)
     {
-        return await _context.SaleItems.FindAsync(id);
+        return await _context.SaleItems.FirstOrDefaultAsync(s => s.Id == id);
     }
 
     public async Task<SaleItem> AddAsync(SaleItem saleItem)

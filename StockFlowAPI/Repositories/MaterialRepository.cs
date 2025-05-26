@@ -7,12 +7,7 @@ namespace StockFlowAPI.Repositories
 {
     public class MaterialRepository : RepositoryBase<Material>, IMaterialRepository
     {
-        private readonly AppDbContext _context;
-
-        public MaterialRepository(AppDbContext context) : base(context)
-        {
-            _context = context;
-        }
+        public MaterialRepository(AppDbContext context) : base(context) { }
 
         public async Task<Material?> GetByNameAsync(string name)
         {

@@ -7,12 +7,7 @@ namespace StockFlowAPI.Repositories
 {
     public class SaleRepository : RepositoryBase<Sale>, ISaleRepository
     {
-        private readonly AppDbContext _context;
-
-        public SaleRepository(AppDbContext context) : base(context)
-        {
-            _context = context;
-        }
+        public SaleRepository(AppDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Sale>> GetAllWithItemsAsync()
         {
