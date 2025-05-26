@@ -27,17 +27,17 @@ StockFlow é uma aplicação de **gestão de materiais, controle de estoque e pr
 
 ## ✅ Módulos do Sistema
 
-| 🔧 Módulo                   | ✔️ Status      | 🔎 Descrição                                                |
-| --------------------------- | -------------- | ----------------------------------------------------------- |
+| 🔧 Módulo                   | ✔️ Status      | 🔎 Descrição                                                 |
+| --------------------------- | -------------- | -----------------------------------------------------------   |
 | Gestão de materiais         | ✅ Implementado | CRUD de produtos (nome, cor, tamanho, preço, descrição)     |
 | Inventário de estoque       | ✅ Implementado | Controle de estoque atrelado aos materiais                  |
 | Processo de vendas          | ✅ Implementado | Vendas com controle de itens (`Sale` e `SaleItem`)          |
-| Carrinho de compras         | ❌ Pendente     | A ser implementado                                          |
-| Máquina de estados (vendas) | ⚠️ Parcial     | Status na entidade `Sale` (`Pendente`, `Pago`, `Cancelado`) |
-| Contas a pagar              | ❌ Pendente     | Cadastro de despesas (fornecedores, contas, serviços)       |
-| Contas a receber            | ❌ Pendente     | Recebíveis gerados pelas vendas                             |
-| Gestão de funcionários      | ❌ Pendente     | Cadastro básico (nome, cargo, salário)                      |
-| Relatórios contábeis        | ❌ Pendente     | Endpoint de resumo financeiro, vendas e fluxo de caixa      |
+| Carrinho de compras         | ✅ Implementado | CRUD de itens no carrinho antes de fechar a venda           |
+| Máquina de estados (vendas) | ✅ Implementado | Endpoint para atualizar status da venda                     |
+| Contas a pagar              | ✅ Implementado | Cadastro de despesas, status (Pendente, Pago)               |
+| Contas a receber            | ✅ Implementado | Gerado automaticamente ao criar uma venda                   |
+| Gestão de funcionários      | ✅ Implementado | Cadastro de funcionários (nome, cargo, salário)             |
+| Relatórios contábeis        | ✅ Implementado | Endpoint `/api/reports/financial` com resumo                |
 
 ---
 
@@ -70,7 +70,7 @@ StockFlowAPI/
 ### 📥 Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/StockFlow.git
+git clone https://github.com/JhenyfferRidieri/StockFlow.git
 cd StockFlow/StockFlowAPI
 ```
 
@@ -106,13 +106,17 @@ http://localhost:5000/swagger
 
 ---
 
-## 📝 Requisitos Funcionais
+## 📝 Funcionalidades do Sistema
 
-* CRUD completo de materiais, estoque, vendas e itens de venda.
-* Processamento de vendas com cálculo de total.
-* Controle de estoque vinculado à venda.
-* Persistência de dados no MySQL.
-* Documentação da API via Swagger.
+- 🔹 Gestão de materiais (CRUD)
+- 🔹 Controle de inventário (CRUD com vínculo a materiais)
+- 🔹 Processo de vendas (CRUD com itens e cálculo automático do total)
+- 🔹 Carrinho de compras (adicionar, editar e remover itens antes da venda)
+- 🔹 Máquina de estados nas vendas (Pendente, Pago, Cancelado, Enviado, Entregue)
+- 🔹 Contas a pagar (gerenciar despesas operacionais)
+- 🔹 Contas a receber (geradas automaticamente nas vendas)
+- 🔹 Gestão de funcionários (nome, cargo, salário, status)
+- 🔹 Relatórios contábeis (vendas, contas a pagar, contas a receber, saldo)
 
 ## 🚫 Requisitos Não Funcionais
 
