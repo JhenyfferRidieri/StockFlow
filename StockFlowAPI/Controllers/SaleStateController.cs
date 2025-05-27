@@ -14,7 +14,7 @@ namespace StockFlowAPI.Controllers
             _saleStateService = saleStateService;
         }
 
-        // PUT: api/salestate/5?status=Pago
+        //PUT: api/salestate/{saleId}?status=Enviado
         [HttpPut("{saleId}")]
         public async Task<IActionResult> UpdateStatus(int saleId, [FromQuery] string status)
         {

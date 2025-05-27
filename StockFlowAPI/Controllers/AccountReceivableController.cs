@@ -16,54 +16,57 @@ namespace StockFlowAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AccountReceivable>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var accounts = await _service.GetAllAsync();
-            return Ok(accounts);
+            var result = await _service.GetAllAsync();
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AccountReceivable>> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var account = await _service.GetByIdAsync(id);
-            if (account == null) return NotFound();
-            return Ok(account);
+            var result = await _service.GetByIdAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<AccountReceivable>> Create(AccountReceivable account)
+        public async Task<IActionResult> Create([FromBody] AccountReceivable account)
         {
             var created = await _service.CreateAsync(account);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, AccountReceivable account)
+        public async Task<IActionResult> Update(int id, [FromBody] AccountReceivable account)
         {
-            if (id != account.Id) return BadRequest("ID da URL difere do corpo");
+            if (id != account.Id) return BadRequest();
 
-            await _service.UpdateAsync(account);
-            return NoContent();
+            var updated = await _service.UpdateAsync(account);
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _service.DeleteAsync(id);
-            if (!deleted) return NotFound();
-            return NoContent();
+            return deleted ? NoContent() : NotFound();
         }
 
-        [HttpPatch("{id}/receive")]
+        // Marcar como Recebido
+        [HttpPut("{id}/receive")]
         public async Task<IActionResult> MarkAsReceived(int id)
         {
-            var account = await _service.GetByIdAsync(id);
-            if (account == null) return NotFound();
+            var success = await _service.MarkAsReceivedAsync(id);
+            return success ? Ok("Conta marcada como recebida.") : NotFound();
+        }
 
-            account.IsReceived = true;
-            await _service.UpdateAsync(account);
-
-            return NoContent();
+        // Filtrar por status (pago, pendente, vencido)
+        [HttpGet("filter/status")]
+        public async Task<IActionResult> FilterByStatus([FromQuery] string status)
+        {
+            var result = await _service.GetByStatusAsync(status);
+            return Ok(result);
         }
     }
 }

@@ -9,5 +9,8 @@ namespace StockFlowAPI.Interfaces.IServices
         Task<Sale> CreateAsync(Sale sale);
         Task<Sale> UpdateAsync(Sale sale);
         Task<bool> DeleteAsync(int id);
+        Task<bool> PaySaleAsync(int saleId);
+        Task<bool> CancelSaleAsync(int saleId, string reason);
+        Task<bool> DecreaseStockForSaleAsync(Sale sale);
     }
 }

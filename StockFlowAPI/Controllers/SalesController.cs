@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StockFlowAPI.Interfaces.IServices;
 using StockFlowAPI.Models;
 using StockFlowAPI.Models.Enum;
@@ -17,6 +17,7 @@ namespace StockFlowAPI.Controllers
             _saleService = saleService;
         }
 
+        // GET: api/sales
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -24,6 +25,7 @@ namespace StockFlowAPI.Controllers
             return Ok(sales);
         }
 
+        // GET: api/sales/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -32,6 +34,7 @@ namespace StockFlowAPI.Controllers
             return Ok(sale);
         }
 
+        // POST: api/sales
         [HttpPost]
         public async Task<IActionResult> Create(Sale sale)
         {
@@ -39,6 +42,7 @@ namespace StockFlowAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
+        // PUT: api/sales/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Sale sale)
         {
@@ -48,6 +52,7 @@ namespace StockFlowAPI.Controllers
             return Ok(updated);
         }
 
+        // DELETE: api/sales/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -55,7 +60,7 @@ namespace StockFlowAPI.Controllers
             return deleted ? NoContent() : NotFound();
         }
 
-        // Endpoint para atualizar Status
+        // PATCH: api/sales/{id}/status
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id, UpdateSaleStatusDto dto)
         {
@@ -66,6 +71,44 @@ namespace StockFlowAPI.Controllers
             await _saleService.UpdateAsync(sale);
 
             return Ok(sale);
+        }
+
+        // POST: api/sales/{id}/pay
+        [HttpPost("{id}/pay")]
+        public async Task<IActionResult> PaySale(int id)
+        {
+            try
+            {
+                var success = await _saleService.PaySaleAsync(id);
+
+                if (!success)
+                    return BadRequest("Falha no pagamento. Estoque insuficiente ou venda não encontrada.");
+
+                return Ok("Pagamento realizado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // POST: api/sales/{id}/cancel
+        [HttpPost("{id}/cancel")]
+        public async Task<IActionResult> CancelSale(int id, [FromBody] CancelSaleDto dto)
+        {
+            try
+            {
+                var success = await _saleService.CancelSaleAsync(id, dto.Reason);
+
+                if (!success)
+                    return BadRequest("Falha ao cancelar a venda.");
+
+                return Ok("Venda cancelada com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

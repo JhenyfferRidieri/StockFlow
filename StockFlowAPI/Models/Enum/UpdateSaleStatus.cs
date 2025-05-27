@@ -1,6 +1,6 @@
 using StockFlowAPI.Models.Enum;
 
-namespace StockFlowAPI.Dto
+namespace StockFlowAPI.Models.Enum
 {
     public class UpdateSaleStatusDto
     {

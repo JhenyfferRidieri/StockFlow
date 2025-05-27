@@ -1,5 +1,6 @@
 using StockFlowAPI.Interfaces.IRepository;
 using StockFlowAPI.Interfaces.IServices;
+using StockFlowAPI.Dtos;
 using StockFlowAPI.Models;
 
 namespace StockFlowAPI.Services
@@ -48,6 +49,33 @@ namespace StockFlowAPI.Services
                 return false;
 
             await _inventoryRepository.DeleteAsync(inventory.Id);
+            return true;
+        }
+
+        public async Task<bool> ApplyInventoryMovementAsync(InventoryMovementRequestDto movement)
+        {
+            var inventory = await _inventoryRepository.GetByMaterialIdAsync(movement.MaterialId);
+
+            if (inventory == null)
+                throw new ArgumentException("Material não encontrado no estoque.");
+
+            if (movement.Type == "entry")
+            {
+                inventory.Quantity += movement.Quantity;
+            }
+            else if (movement.Type == "exit")
+            {
+                if (inventory.Quantity < movement.Quantity)
+                    throw new ArgumentException("Estoque insuficiente para saída.");
+
+                inventory.Quantity -= movement.Quantity;
+            }
+            else
+            {
+                throw new ArgumentException("Tipo de movimentação inválido.");
+            }
+
+            await _inventoryRepository.UpdateAsync(inventory);
             return true;
         }
     }

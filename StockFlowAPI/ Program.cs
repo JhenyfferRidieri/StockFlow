@@ -23,6 +23,7 @@ builder.Services.AddScoped<ISaleItemRepository, SaleItemRepository>();
 builder.Services.AddScoped<IAccountPayableRepository, AccountPayableRepository>();
 builder.Services.AddScoped<IAccountReceivableRepository, AccountReceivableRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IInventoryMovementRepository, InventoryMovementRepository>();
 
 // Injeção de Dependência - Services
 builder.Services.AddScoped<IMaterialService, MaterialService>();
@@ -35,6 +36,7 @@ builder.Services.AddScoped<IAccountPayableService, AccountPayableService>();
 builder.Services.AddScoped<IAccountReceivableService, AccountReceivableService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IInventoryMovementService, InventoryMovementService>();
 
 // Controllers
 builder.Services.AddControllers();

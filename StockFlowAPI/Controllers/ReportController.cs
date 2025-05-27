@@ -1,27 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
 using StockFlowAPI.Interfaces.IServices;
-using StockFlowAPI.Dto;
 
 namespace StockFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportsController : ControllerBase
+    public class ReportController : ControllerBase
     {
         private readonly IReportService _reportService;
 
-        public ReportsController(IReportService reportService)
+        public ReportController(IReportService reportService)
         {
             _reportService = reportService;
         }
 
         [HttpGet("financial")]
-        public async Task<ActionResult<FinancialSummaryDto>> GetFinancialSummary(
+        public async Task<IActionResult> GetFinancialReport(
             [FromQuery] DateTime? startDate,
             [FromQuery] DateTime? endDate)
         {
-            var result = await _reportService.GetFinancialSummaryAsync(startDate, endDate);
-            return Ok(result);
+            var report = await _reportService.GetFinancialReportAsync(startDate, endDate);
+            return Ok(report);
         }
     }
 }

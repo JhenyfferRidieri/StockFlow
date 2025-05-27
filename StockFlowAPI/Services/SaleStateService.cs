@@ -1,7 +1,7 @@
-using StockFlowAPI.Interfaces.IRepository;
+﻿using StockFlowAPI.Interfaces.IRepository;
 using StockFlowAPI.Interfaces.IServices;
-using StockFlowAPI.Models.Enum;
 using StockFlowAPI.Models;
+using StockFlowAPI.Models.Enum;
 
 namespace StockFlowAPI.Services
 {
@@ -16,33 +16,29 @@ namespace StockFlowAPI.Services
 
         public async Task<bool> UpdateStatusAsync(int saleId, string newStatus)
         {
-            var sale = await _saleRepository.GetByIdAsync(saleId);
-
+            var sale = await _saleRepository.GetByIdWithItemsAsync(saleId);
             if (sale == null)
-                return false;
+                throw new ArgumentException("Venda não encontrada.");
 
-            if (!Enum.TryParse<SaleStatus>(newStatus, true, out var parsedStatus))
-                throw new Exception("Status inv�lido.");
+            var statusAtual = sale.Status;
+            var statusNovo = Enum.Parse<SaleStatus>(newStatus, ignoreCase: true);
 
-            // L�gica de transi��o
-            if (!CanChangeStatus(sale.Status, parsedStatus))
-                throw new Exception($"N�o � permitido mudar de {sale.Status} para {parsedStatus}.");
+            // Validação de transições
+            if (statusNovo == SaleStatus.Enviado && statusAtual != SaleStatus.Pago)
+                throw new InvalidOperationException("Só pode Enviar uma venda que está Paga.");
 
-            sale.Status = parsedStatus;
+            if (statusNovo == SaleStatus.Entregue && statusAtual != SaleStatus.Enviado)
+                throw new InvalidOperationException("Só pode Entregar uma venda que está Enviada.");
+
+            if (statusNovo == SaleStatus.Cancelado &&
+                (statusAtual == SaleStatus.Entregue || statusAtual == SaleStatus.Devolvido))
+                throw new InvalidOperationException("Não pode Cancelar uma venda já Entregue ou Devolvida.");
+
+            // Se passou nas regras, atualiza
+            sale.Status = statusNovo;
             await _saleRepository.UpdateAsync(sale);
-            return true;
-        }
 
-        private bool CanChangeStatus(SaleStatus current, SaleStatus next)
-        {
-            return (current, next) switch
-            {
-                (SaleStatus.Pendente, SaleStatus.Pago) => true,
-                (SaleStatus.Pago, SaleStatus.Enviado) => true,
-                (SaleStatus.Enviado, SaleStatus.Entregue) => true,
-                (_, SaleStatus.Cancelado) => true, // Pode cancelar de qualquer status
-                _ => false
-            };
+            return true;
         }
     }
 }

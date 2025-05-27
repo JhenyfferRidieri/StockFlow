@@ -1,9 +1,9 @@
-using StockFlowAPI.Dto;
+using StockFlowAPI.Dtos; 
 
 namespace StockFlowAPI.Interfaces.IServices
 {
     public interface IReportService
     {
-        Task<FinancialSummaryDto> GetFinancialSummaryAsync(DateTime? startDate, DateTime? endDate);
+        Task<FinancialReportDto> GetFinancialReportAsync(DateTime? startDate, DateTime? endDate);
     }
 }

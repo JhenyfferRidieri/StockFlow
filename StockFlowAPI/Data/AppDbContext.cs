@@ -9,6 +9,7 @@ namespace StockFlowAPI.Data
 
         public DbSet<Material> Materials { get; set; }
         public DbSet<Inventory> Inventory { get; set; }
+        public DbSet<InventoryMovement> InventoryMovements { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleItem> SaleItems { get; set; }
         public DbSet<AccountPayable> AccountsPayable { get; set; }
@@ -19,14 +20,39 @@ namespace StockFlowAPI.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // material
+            // Material
             modelBuilder.Entity<Material>(entity =>
             {
                 entity.ToTable("Materials");
                 entity.HasKey(e => e.Id);
 
-                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.Description).HasMaxLength(255);
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.HasIndex(e => e.Name) //  Nome único
+                    .IsUnique();
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Price)
+                    .HasColumnType("decimal(10,2)")
+                    .IsRequired();
+
+                entity.Property(e => e.Quantity)
+                    .IsRequired();
+
+                entity.Property(e => e.Supplier)
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Size) 
+                    .IsRequired()
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Color) 
+                    .IsRequired()
+                    .HasMaxLength(20);
             });
 
             // inventário
@@ -36,9 +62,36 @@ namespace StockFlowAPI.Data
                 entity.HasKey(e => e.Id);
 
                 entity.HasOne(e => e.Material)
-                    .WithMany(m => m.Inventory)
-                    .HasForeignKey(e => e.MaterialId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                      .WithMany()
+                      .HasForeignKey(e => e.MaterialId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(e => e.Quantity)
+                      .IsRequired();
+            });
+
+            modelBuilder.Entity<InventoryMovement>(entity =>
+            {
+                entity.ToTable("InventoryMovements");
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Material)
+                      .WithMany()
+                      .HasForeignKey(e => e.MaterialId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(e => e.Type)
+                      .IsRequired();
+
+                entity.Property(e => e.Quantity)
+                      .IsRequired();
+
+                entity.Property(e => e.Description)
+                      .HasMaxLength(200);
+
+                entity.Property(e => e.Date)
+                      .HasColumnType("datetime")
+                      .HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
 
             // venda

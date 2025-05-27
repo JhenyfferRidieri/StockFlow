@@ -1,3 +1,4 @@
+using StockFlowAPI.Dtos;
 using StockFlowAPI.Models;
 
 namespace StockFlowAPI.Interfaces.IServices
@@ -10,5 +11,7 @@ namespace StockFlowAPI.Interfaces.IServices
         Task<Inventory> CreateAsync(Inventory inventory);
         Task<Inventory> UpdateAsync(Inventory inventory);
         Task<bool> DeleteAsync(int id);
+
+        Task<bool> ApplyInventoryMovementAsync(InventoryMovementRequestDto movement);
     }
 }

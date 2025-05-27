@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StockFlowAPI.Data;
+using StockFlowAPI.Interfaces.IServices;
 using StockFlowAPI.Models;
 
 namespace StockFlowAPI.Controllers
@@ -9,42 +8,45 @@ namespace StockFlowAPI.Controllers
     [ApiController]
     public class MaterialController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IMaterialService _materialService;
 
-        public MaterialController(AppDbContext context)
+        public MaterialController(IMaterialService materialService)
         {
-            _context = context;
+            _materialService = materialService;
         }
 
         // GET: api/Material
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Material>>> GetMaterials()
         {
-            return await _context.Materials.ToListAsync();
+            var materials = await _materialService.GetAllAsync();
+            return Ok(materials);
         }
 
         // GET: api/Material/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Material>> GetMaterial(int id)
         {
-            var material = await _context.Materials.FindAsync(id);
-
+            var material = await _materialService.GetByIdAsync(id);
             if (material == null)
-            {
                 return NotFound();
-            }
 
-            return material;
+            return Ok(material);
         }
 
         // POST: api/Material
         [HttpPost]
         public async Task<ActionResult<Material>> PostMaterial(Material material)
         {
-            _context.Materials.Add(material);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetMaterial), new { id = material.Id }, material);
+            try
+            {
+                var created = await _materialService.CreateAsync(material);
+                return CreatedAtAction(nameof(GetMaterial), new { id = created.Id }, created);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         // PUT: api/Material/5
@@ -52,50 +54,28 @@ namespace StockFlowAPI.Controllers
         public async Task<IActionResult> PutMaterial(int id, Material material)
         {
             if (id != material.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(material).State = EntityState.Modified;
+                return BadRequest(new { error = "ID do material não corresponde." });
 
             try
             {
-                await _context.SaveChangesAsync();
+                var updated = await _materialService.UpdateAsync(material);
+                return Ok(updated);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ArgumentException ex)
             {
-                if (!MaterialExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(new { error = ex.Message });
             }
-
-            return NoContent();
         }
 
         // DELETE: api/Material/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMaterial(int id)
         {
-            var material = await _context.Materials.FindAsync(id);
-            if (material == null)
-            {
+            var success = await _materialService.DeleteAsync(id);
+            if (!success)
                 return NotFound();
-            }
-
-            _context.Materials.Remove(material);
-            await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool MaterialExists(int id)
-        {
-            return _context.Materials.Any(e => e.Id == id);
         }
     }
 }

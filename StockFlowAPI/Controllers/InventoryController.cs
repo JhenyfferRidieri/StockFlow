@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using StockFlowAPI.Dtos;
 using Microsoft.EntityFrameworkCore;
+using StockFlowAPI.Interfaces.IServices;
 using StockFlowAPI.Data;
 using StockFlowAPI.Models;
 
@@ -10,10 +12,12 @@ namespace StockFlowAPI.Controllers
     public class InventoryController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IInventoryService _inventoryService;
 
-        public InventoryController(AppDbContext context)
+        public InventoryController(AppDbContext context, IInventoryService inventoryService)
         {
             _context = context;
+            _inventoryService = inventoryService;
         }
 
         // GET: api/Inventory
@@ -50,6 +54,21 @@ namespace StockFlowAPI.Controllers
 
             return CreatedAtAction(nameof(GetInventory), new { id = inventory.Id }, inventory);
         }
+
+        [HttpPost("movement")]
+        public async Task<IActionResult> ApplyInventoryMovement([FromBody] InventoryMovementRequestDto movement)
+        {
+            try
+            {
+                await _inventoryService.ApplyInventoryMovementAsync(movement);
+                return Ok(new { message = "Movimentação realizada com sucesso." });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
 
         // PUT: api/Inventory/5
         [HttpPut("{id}")]

@@ -49,5 +49,12 @@ namespace StockFlowAPI.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<AccountReceivable?> GetBySaleIdAsync(int saleId)
+        {
+            return await _context.AccountsReceivable
+                .FirstOrDefaultAsync(a => a.SaleId == saleId);
+        }
+
     }
 }

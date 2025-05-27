@@ -16,54 +16,65 @@ namespace StockFlowAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AccountPayable>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var accounts = await _service.GetAllAsync();
-            return Ok(accounts);
+            var result = await _service.GetAllAsync();
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AccountPayable>> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var account = await _service.GetByIdAsync(id);
-            if (account == null) return NotFound();
-            return Ok(account);
+            var result = await _service.GetByIdAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<AccountPayable>> Create(AccountPayable account)
+        public async Task<IActionResult> Create([FromBody] AccountPayable account)
         {
             var created = await _service.CreateAsync(account);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, AccountPayable account)
+        public async Task<IActionResult> Update(int id, [FromBody] AccountPayable account)
         {
-            if (id != account.Id) return BadRequest("ID da URL difere do corpo");
+            if (id != account.Id) return BadRequest();
 
-            await _service.UpdateAsync(account);
-            return NoContent();
+            var updated = await _service.UpdateAsync(account);
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _service.DeleteAsync(id);
-            if (!deleted) return NotFound();
-            return NoContent();
+            return deleted ? NoContent() : NotFound();
         }
 
-        [HttpPatch("{id}/pay")]
+        // Marcar como pago
+        [HttpPut("{id}/pay")]
         public async Task<IActionResult> MarkAsPaid(int id)
         {
-            var account = await _service.GetByIdAsync(id);
-            if (account == null) return NotFound();
+            var success = await _service.MarkAsPaidAsync(id);
+            return success ? Ok("Conta marcada como paga.") : NotFound();
+        }
 
-            account.IsPaid = true;
-            await _service.UpdateAsync(account);
+        // Filtrar por status (pago, pendente, atrasado)
+        [HttpGet("filter/status")]
+        public async Task<IActionResult> FilterByStatus([FromQuery] string status)
+        {
+            var result = await _service.GetByStatusAsync(status);
+            return Ok(result);
+        }
 
-            return NoContent();
+        // Filtrar por tipo de custo
+        [HttpGet("filter/costtype")]
+        public async Task<IActionResult> FilterByCostType([FromQuery] string costType)
+        {
+            var result = await _service.GetByCostTypeAsync(costType);
+            return Ok(result);
         }
     }
 }

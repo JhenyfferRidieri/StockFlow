@@ -13,9 +13,14 @@ namespace StockFlowAPI.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<Employee>> GetAllAsync()
+        public async Task<IEnumerable<Employee>> GetAllAsync(bool? onlyActive = null)
         {
-            return await _repository.GetAllAsync();
+            var all = await _repository.GetAllAsync();
+
+            if (onlyActive.HasValue)
+                return all.Where(e => e.IsActive == onlyActive.Value);
+
+            return all;
         }
 
         public async Task<Employee?> GetByIdAsync(int id)
@@ -25,6 +30,7 @@ namespace StockFlowAPI.Services
 
         public async Task<Employee> CreateAsync(Employee employee)
         {
+            employee.IsActive = true;
             await _repository.AddAsync(employee);
             return employee;
         }
@@ -35,12 +41,13 @@ namespace StockFlowAPI.Services
             return employee;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeactivateAsync(int id)
         {
             var employee = await _repository.GetByIdAsync(id);
             if (employee == null) return false;
 
-            await _repository.DeleteAsync(id);
+            employee.IsActive = false;
+            await _repository.UpdateAsync(employee);
             return true;
         }
     }

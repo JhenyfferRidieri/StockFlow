@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using StockFlowAPI.Data;
+using StockFlowAPI.Dtos;
 using StockFlowAPI.Interfaces.IServices;
-using StockFlowAPI.Dto;
 
 namespace StockFlowAPI.Services
 {
@@ -14,31 +14,45 @@ namespace StockFlowAPI.Services
             _context = context;
         }
 
-        public async Task<FinancialSummaryDto> GetFinancialSummaryAsync(DateTime? startDate, DateTime? endDate)
+        public async Task<FinancialReportDto> GetFinancialReportAsync(DateTime? startDate, DateTime? endDate)
         {
             var salesQuery = _context.Sales.AsQueryable();
-            var expensesQuery = _context.AccountsPayable.AsQueryable();
-
             if (startDate.HasValue)
-            {
                 salesQuery = salesQuery.Where(s => s.CreatedAt >= startDate.Value);
-                expensesQuery = expensesQuery.Where(e => e.CreatedAt >= startDate.Value);
-            }
-
             if (endDate.HasValue)
-            {
                 salesQuery = salesQuery.Where(s => s.CreatedAt <= endDate.Value);
-                expensesQuery = expensesQuery.Where(e => e.CreatedAt <= endDate.Value);
-            }
 
-            var revenue = await salesQuery.SumAsync(s => (decimal?)s.Total) ?? 0;
-            var expenses = await expensesQuery.SumAsync(e => (decimal?)e.Amount) ?? 0;
+            var totalSales = await salesQuery.SumAsync(s => s.Total);
 
-            return new FinancialSummaryDto
+            var receivables = await _context.AccountsReceivable.ToListAsync();
+            var payables = await _context.AccountsPayable.ToListAsync();
+
+            var totalReceivablePending = receivables.Where(r => !r.IsReceived).Sum(r => r.Amount);
+            var totalReceivableReceived = receivables.Where(r => r.IsReceived).Sum(r => r.Amount);
+
+            var totalPayablePending = payables.Where(p => !p.IsPaid).Sum(p => p.Amount);
+            var totalPayablePaid = payables.Where(p => p.IsPaid).Sum(p => p.Amount);
+
+            //  Custo dos materiais vendidos
+            var saleItems = await _context.SaleItems
+                .Include(i => i.Material)
+                .Where(i => salesQuery.Select(s => s.Id).Contains(i.SaleId))
+                .ToListAsync();
+
+            var costOfMaterials = saleItems.Sum(i => i.Quantity * i.Material.Price);
+
+            //  Lucro Bruto
+            var grossProfit = totalSales - costOfMaterials - (totalPayablePaid + totalPayablePending);
+
+            return new FinancialReportDto
             {
-                Revenue = revenue,
-                Expense = expenses,
-                Balance = revenue - expenses
+                TotalSales = totalSales,
+                TotalAccountsReceivablePending = totalReceivablePending,
+                TotalAccountsReceivableReceived = totalReceivableReceived,
+                TotalAccountsPayablePending = totalPayablePending,
+                TotalAccountsPayablePaid = totalPayablePaid,
+                CostOfMaterials = costOfMaterials,
+                GrossProfit = grossProfit
             };
         }
     }
