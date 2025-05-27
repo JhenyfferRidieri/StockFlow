@@ -130,7 +130,7 @@ http://localhost:5000/swagger
 
 ## 📈 Diagrama BPMN
 
-![Diagrama BPMN](./docs/bpmn-diagram.jpg)
+![Diagrama BPMN](./docs/bpmn-diagram)
 
 
 
@@ -141,7 +141,7 @@ http://localhost:5000/swagger
 
 
 
-📥 [Clique aqui para baixar o diagrama BPMN](./docs/bpmn-diagram.jpg)
+📥 [Clique aqui para baixar o diagrama BPMN](./docs/bpmn-diagram)
 
 
 ---
