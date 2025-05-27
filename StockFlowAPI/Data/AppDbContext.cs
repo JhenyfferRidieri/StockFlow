@@ -200,9 +200,11 @@ namespace StockFlowAPI.Data
                 entity.Property(e => e.Salary)
                     .HasColumnType("decimal(10,2)")
                     .IsRequired();
+
+                entity.Property(e => e.IsActive) 
+                    .IsRequired()
+                    .HasDefaultValue(true);
             });
-
-
         }
     }
 }
