@@ -130,7 +130,12 @@ http://localhost:5000/swagger
 
 ## 📈 Diagrama BPMN
 
-👉 **
+O diagrama abaixo representa o fluxo completo do sistema **StockFlow**, desde o cadastro de produtos, controle de estoque, carrinho de compras, checkout, gestão financeira até atualização dos dados no banco.
+
+![Diagrama BPMN](./docs/bpmn-diagram.png)
+
+📥 [Clique aqui para baixar o diagrama BPMN](./docs/bpmn-diagram.png)
+
 
 ---
 
