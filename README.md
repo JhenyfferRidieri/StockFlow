@@ -130,10 +130,10 @@ http://localhost:5000/swagger
 
 ## 📈 Diagrama BPMN
 
-![Diagrama BPMN](./docs/bpmn-diagram.jpg)
+![Diagrama BPMN](./StockFlowAPI/docs/bpmn-diagram.jpg)
 
+📥 [Clique aqui para baixar o diagrama BPMN](./StockFlowAPI/docs/bpmn-diagram.jpg)
 
-📥 [Clique aqui para baixar o diagrama BPMN](./docs/bpmn-diagram.jpg)
 
 
 ---
