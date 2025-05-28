@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using StockFlowAPI.Interfaces.IServices;
 using StockFlowAPI.Data;
 using StockFlowAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StockFlowAPI.Controllers
 {
+    [Authorize(Roles = "Employee")]
     [Route("api/[controller]")]
     [ApiController]
     public class InventoryController : ControllerBase

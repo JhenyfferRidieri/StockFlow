@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using StockFlowAPI.Interfaces.IServices;
 using StockFlowAPI.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace StockFlowAPI.Controllers
 {
+    [Authorize(Roles = "Employee")]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountPayableController : ControllerBase

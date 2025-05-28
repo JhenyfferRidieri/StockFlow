@@ -3,6 +3,8 @@ using StockFlowAPI.Interfaces.IServices;
 using StockFlowAPI.Models;
 using StockFlowAPI.Models.Enum;
 using StockFlowAPI.Dto;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace StockFlowAPI.Controllers
 {
@@ -17,7 +19,8 @@ namespace StockFlowAPI.Controllers
             _saleService = saleService;
         }
 
-        // GET: api/sales
+        //  Funcionários - Listar vendas
+        [Authorize(Roles = "Employee")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -25,7 +28,8 @@ namespace StockFlowAPI.Controllers
             return Ok(sales);
         }
 
-        // GET: api/sales/{id}
+        // Funcionários - Buscar por ID
+        [Authorize(Roles = "Employee")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -34,7 +38,8 @@ namespace StockFlowAPI.Controllers
             return Ok(sale);
         }
 
-        // POST: api/sales
+        //  Cliente - Criar venda
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create(Sale sale)
         {
@@ -42,7 +47,8 @@ namespace StockFlowAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
-        // PUT: api/sales/{id}
+        // Funcionários - Atualizar venda
+        [Authorize(Roles = "Employee")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Sale sale)
         {
@@ -52,7 +58,8 @@ namespace StockFlowAPI.Controllers
             return Ok(updated);
         }
 
-        // DELETE: api/sales/{id}
+        // Funcionários - Deletar venda
+        [Authorize(Roles = "Employee")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -60,7 +67,8 @@ namespace StockFlowAPI.Controllers
             return deleted ? NoContent() : NotFound();
         }
 
-        // PATCH: api/sales/{id}/status
+        // Cliente - Pagar venda
+        [AllowAnonymous]
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id, UpdateSaleStatusDto dto)
         {
@@ -73,7 +81,8 @@ namespace StockFlowAPI.Controllers
             return Ok(sale);
         }
 
-        // POST: api/sales/{id}/pay
+        // Cliente - Pagar venda
+        [AllowAnonymous]
         [HttpPost("{id}/pay")]
         public async Task<IActionResult> PaySale(int id)
         {
@@ -92,7 +101,8 @@ namespace StockFlowAPI.Controllers
             }
         }
 
-        // POST: api/sales/{id}/cancel
+        //  Cliente - Cancelar venda
+        [AllowAnonymous]
         [HttpPost("{id}/cancel")]
         public async Task<IActionResult> CancelSale(int id, [FromBody] CancelSaleDto dto)
         {

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using StockFlowAPI.Interfaces.IServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StockFlowAPI.Controllers
 {
+    [Authorize(Roles = "Employee")]
     [Route("api/[controller]")]
     [ApiController]
     public class SaleStateController : ControllerBase

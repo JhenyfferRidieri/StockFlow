@@ -2,9 +2,11 @@
 using StockFlowAPI.Dtos;
 using StockFlowAPI.Interfaces.IServices;
 using StockFlowAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StockFlowAPI.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class CartController : ControllerBase
