@@ -9,7 +9,6 @@ using StockFlowAPI.Services;
 using System.Text;
 using Microsoft.OpenApi.Models;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // JWT Configuração
@@ -41,7 +40,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Injeção de Dependências
+// Injeção de Dependências - Repositories e Services
 builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
@@ -63,13 +62,12 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IInventoryMovementService, InventoryMovementService>();
 
-// Serviço de autenticação
 builder.Services.AddScoped<AuthService>();
 
 // Controllers
 builder.Services.AddControllers();
 
-// Swagger + Autenticação JWT no Swagger
+// Swagger com Autenticação
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -80,10 +78,9 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Documentação da API StockFlow"
     });
 
-    // Swagger com Autenticação
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "Insira o token JWT no campo abaixo. Exemplo: Bearer {seu token}",
+        Description = "Insira o token JWT. Ex.: Bearer {seu token}",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
@@ -106,21 +103,20 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Cors
+// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
 });
 
 var app = builder.Build();
 
-/// Swagger SEM restrição de ambiente
+// Middlewares
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -128,12 +124,10 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 
-// HTTPS opcional
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
-// Ativar autenticação e autorização
 app.UseAuthentication();
 app.UseAuthorization();
 
